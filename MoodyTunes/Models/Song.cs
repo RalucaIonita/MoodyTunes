@@ -10,6 +10,7 @@ namespace MoodyTunes.Models
         public int id { get; set; }
         public string title { get; set; }
         public string artist { get; set; }
+        public string link { get; set; }
 
         public List<SongPlaylist> songPlaylist { get; set; }
     }

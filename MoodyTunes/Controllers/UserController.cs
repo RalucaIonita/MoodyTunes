@@ -54,7 +54,7 @@ namespace MoodyTunes.Controllers //GOOD
         [HttpPut("{id}")]
         public User Put(int id, UserDTO value)
         {
-            User model = IUserRepository.Get(id);
+            User model = iUserRepository.Get(id);
             if (value.firstName != null)
             {
                 model.firstName = value.firstName;
@@ -81,8 +81,8 @@ namespace MoodyTunes.Controllers //GOOD
         [HttpDelete("{id}")]
         public User Delete(int id)
         {
-            User model = IUserRepository.Get(id);
-            return IUserRepository.Delete(model);
+            User model = iUserRepository.Get(id);
+            return iUserRepository.Delete(model);
         }
     }
 }

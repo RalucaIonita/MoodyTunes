@@ -9,5 +9,6 @@ namespace MoodyTunes.DTOs
     {
         public string title { get; set; }
         public string artist { get; set; }
+        public string link { get; set; }
     }
 }

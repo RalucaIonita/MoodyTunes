@@ -43,6 +43,7 @@ namespace MoodyTunes.Controllers
             {
                 title = value.title,
                 artist = value.artist,
+                link = value.link
             };
             return iSongRepository.Create(model);
 
@@ -61,6 +62,11 @@ namespace MoodyTunes.Controllers
             {
                 model.artist = value.artist;
             }
+            if (value.link != null)
+            {
+                model.link = value.link;
+            }
+
             return iSongRepository.Update(model);
 
 

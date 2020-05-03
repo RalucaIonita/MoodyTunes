@@ -39,8 +39,12 @@ namespace MoodyTunes.Controllers
         [HttpPost]
         public MoodLink Post(MoodLinkDTO value) //THIS SHIT NEEDS TO BE MODIFIED
         {
-
-            //
+            MoodLink model = new MoodLink()
+            {
+                moodId = value.moodId,
+                linkedMoodId = value.linkedMoodId,
+                
+            };
             return iMoodLinkRepository.Create(model);
 
         }
