@@ -8,6 +8,12 @@ using Microsoft.AspNetCore.Mvc;
 using MoodyTunes.DTOs;
 using MoodyTunes.Models;
 using MoodyTunes.Repositories.PlaylistRepository;
+using MoodyTunes.Repositories.SongPlaylistRepository;
+using MoodyTunes.Repositories.SongRepository;
+using MoodyTunes.Repositories.MoodLinkRepository;
+using MoodyTunes.Repositories.MoodRepository;
+using MoodyTunes.Repositories.PlaylistMoodRepository;
+
 
 
 namespace MoodyTunes.Controllers //WORK
@@ -17,9 +23,19 @@ namespace MoodyTunes.Controllers //WORK
     public class PlaylistController : ControllerBase
     {
         public IPlaylistRepository iPlaylistRepository { get; set; }
-        public PlaylistController(IPlaylistRepository repository)
+        public ISongPlaylistRepository iSongPlaylistRepository { get; set; }
+        public ISongRepository iSongRepository { get; set; }
+        public IMoodLinkRepository iMoodLinkRepository { get; set; }
+        public IMoodRepository iMoodRepository { get; set; }
+        public IPlaylistMoodRepository iPlaylistMoodRepository { get; set; }
+        public PlaylistController(IPlaylistRepository playlistRepository, ISongRepository songRepository, ISongPlaylistRepository songPlaylistRepository, IMoodLinkRepository moodLinkRepository, IMoodRepository moodRepository, IPlaylistMoodRepository playlistMoodRepository)
         {
-            iPlaylistRepository = repository;
+            iPlaylistRepository = playlistRepository;
+            iSongPlaylistRepository = songPlaylistRepository;
+            iSongRepository = songRepository;
+            iMoodLinkRepository = moodLinkRepository;
+            iMoodRepository = moodRepository;
+            iPlaylistMoodRepository = playlistMoodRepository;
         }
         // GET: api/Playlist
         [HttpGet]
@@ -30,35 +46,122 @@ namespace MoodyTunes.Controllers //WORK
 
         // GET: api/Playlist/5
         [HttpGet("{id}")]
-        public Playlist Get(int id)
+        public PlaylistDetailsDTO Get(int id)
         {
-            return iPlaylistRepository.Get(id);
+            Playlist playlist = iPlaylistRepository.Get(id);
+            PlaylistDetailsDTO myPlaylist = new PlaylistDetailsDTO()
+            {
+                name = playlist.name,
+            };
+
+            IEnumerable<SongPlaylist> mySongsPlaylist = iSongPlaylistRepository.GetAll().Where(x => x.playlistId == playlist.id);
+            IEnumerable<PlaylistMood> myPlaylistMoods = iPlaylistMoodRepository.GetAll().Where(x => x.playlistId == playlist.id);
+
+            //moods
+            if(myPlaylistMoods != null)
+            {
+                List<Mood> moodsList = new List<Mood>();
+                foreach (PlaylistMood playlistMood in myPlaylistMoods)
+                {
+                    Mood mood = iMoodRepository.GetAll().SingleOrDefault(x => x.id == playlistMood.moodId);
+                    moodsList.Add(mood);
+                }
+                myPlaylist.moods = moodsList;
+            }
+            
+
+            if (mySongsPlaylist != null)
+            {
+                List<Song> songsList = new List<Song>();
+                foreach (SongPlaylist songPlaylist in mySongsPlaylist)
+                {
+                    Song song = iSongRepository.GetAll().SingleOrDefault(x => x.id == songPlaylist.songId);
+                    songsList.Add(song);
+                }
+                myPlaylist.songs = songsList;
+
+            }
+
+            return myPlaylist;
         }
 
         // POST: api/Playlist
         [HttpPost]
-        public Playlist Post(PlaylistDTO value) //needs to be modified!!!!!!!!
+        public void Post(PlaylistDetailsDTO value) //needs to be modified!!!!!!!!
         {
             Playlist model = new Playlist()
             {
                 name = value.name,
 
             };
-            return iPlaylistRepository.Create(model);
+
+            iPlaylistRepository.Create(model);
+            for(int i = 0; i < value.moods.Count; i++)
+            {
+                PlaylistMood playlistMood = new PlaylistMood()
+                {
+                    playlistId = model.id,
+                    moodId = value.moods[i].id
+                };
+                iPlaylistMoodRepository.Create(playlistMood);
+            }
+
+            for (int i = 0; i < value.songs.Count; i++)
+            {
+                SongPlaylist songPlaylist = new SongPlaylist()
+                {
+                    playlistId = model.id,
+                    songId = value.songs[i].id
+                };
+                iSongPlaylistRepository.Create(songPlaylist);
+            }
+
+
+            iPlaylistRepository.Create(model);
 
         }
 
         // PUT: api/Playlist/5
         [HttpPut("{id}")]
-        public Playlist Put(int id, PlaylistDTO value) //needs to be modified
+        public void Put(int id, PlaylistDetailsDTO value) //needs to be modified
         {
             Playlist model = iPlaylistRepository.Get(id);
+
             if (value.name != null)
             {
                 model.name = value.name;
             }
 
-            return iPlaylistRepository.Update(model);
+            if (value.moods != null)
+            {
+                foreach (Mood mood in value.moods)
+                {
+                    if (iMoodRepository.Get(mood.id) == null)
+                        iMoodRepository.Update(mood);
+                    PlaylistMood newPlaylistMood = new PlaylistMood()
+                    {
+                        moodId = mood.id,
+                    };
+                    iPlaylistMoodRepository.Update(newPlaylistMood);
+                }
+
+            }
+
+            if(value.songs != null)
+            {
+                foreach (Song song in value.songs)
+                {
+                    if (iSongRepository.Get(song.id) == null)
+                        iSongRepository.Update(song);
+                    SongPlaylist newSongPlaylist = new SongPlaylist()
+                    {
+                        songId = song.id
+                    };
+                    iSongPlaylistRepository.Update(newSongPlaylist);
+                }
+            }
+
+            iPlaylistRepository.Update(model);
         }
 
         // DELETE: api/ApiWithActions/5

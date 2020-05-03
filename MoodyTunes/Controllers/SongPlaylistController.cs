@@ -37,7 +37,7 @@ namespace MoodyTunes.Controllers //THIS
 
         // POST: api/SongPlaylist
         [HttpPost]
-        public SongPlaylist Post(SongPlaylistDTO value)
+        public void Post(SongPlaylistDTO value)
         {
             SongPlaylist model = new SongPlaylist()
             {
@@ -45,13 +45,13 @@ namespace MoodyTunes.Controllers //THIS
                 playlistId = value.playlistId
 
             };
-            return iSongPlaylistRepository.Create(model);
+            iSongPlaylistRepository.Create(model);
 
         }
 
         // PUT: api/SongPlaylist/5
         [HttpPut("{id}")]
-        public SongPlaylist Put(int id, SongPlaylistDTO value)
+        public void Put(int id, SongPlaylistDTO value)
         {
             SongPlaylist model = iSongPlaylistRepository.Get(id);
             if (value.songId != null)
@@ -62,7 +62,7 @@ namespace MoodyTunes.Controllers //THIS
             {
                 model.playlistId = value.playlistId;
             }
-            return iSongPlaylistRepository.Update(model);
+            iSongPlaylistRepository.Update(model);
         }
 
         // DELETE: api/ApiWithActions/5

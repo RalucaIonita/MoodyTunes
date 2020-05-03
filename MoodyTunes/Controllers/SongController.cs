@@ -37,7 +37,7 @@ namespace MoodyTunes.Controllers
 
         // POST: api/Song
         [HttpPost]
-        public Song Post(SongDTO value)
+        public void Post(SongDTO value)
         {
             Song model = new Song()
             {
@@ -45,13 +45,13 @@ namespace MoodyTunes.Controllers
                 artist = value.artist,
                 link = value.link
             };
-            return iSongRepository.Create(model);
+            iSongRepository.Create(model);
 
         }
 
         // PUT: api/Song/5
         [HttpPut("{id}")]
-        public Song Put(int id, SongDTO value)
+        public void Put(int id, SongDTO value)
         {
             Song model = iSongRepository.Get(id);
             if (value.title != null)
@@ -67,7 +67,7 @@ namespace MoodyTunes.Controllers
                 model.link = value.link;
             }
 
-            return iSongRepository.Update(model);
+            iSongRepository.Update(model);
 
 
         }

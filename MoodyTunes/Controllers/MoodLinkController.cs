@@ -37,7 +37,7 @@ namespace MoodyTunes.Controllers
 
         // POST: api/MoodLink
         [HttpPost]
-        public MoodLink Post(MoodLinkDTO value) //THIS SHIT NEEDS TO BE MODIFIED
+        public void Post(MoodLinkDTO value) //THIS SHIT NEEDS TO BE MODIFIED
         {
             MoodLink model = new MoodLink()
             {
@@ -45,17 +45,25 @@ namespace MoodyTunes.Controllers
                 linkedMoodId = value.linkedMoodId,
                 
             };
-            return iMoodLinkRepository.Create(model);
+            iMoodLinkRepository.Create(model);
+
+            MoodLink reversedModel = new MoodLink()
+            {
+                moodId = value.linkedMoodId,
+                linkedMoodId = value.moodId,
+
+            };
+            iMoodLinkRepository.Create(reversedModel);
 
         }
 
         // PUT: api/MoodLink/5
         [HttpPut("{id}")]
-        public MoodLink Put(int id, MoodLinkDTO value) //modify
+        public void Put(int id, MoodLinkDTO value) //modify
         {
             MoodLink model = iMoodLinkRepository.Get(id);
             //stuff?
-            return iMoodLinkRepository.Update(model);
+            iMoodLinkRepository.Update(model);
         }
 
         // DELETE: api/ApiWithActions/5

@@ -37,7 +37,7 @@ namespace MoodyTunes.Controllers //GOOD
 
         // POST: api/User
         [HttpPost]
-        public User Post(UserDTO value)
+        public void Post(UserDTO value)
         {
             User model = new User()
             {
@@ -46,13 +46,13 @@ namespace MoodyTunes.Controllers //GOOD
                 username = value.username,
                 password = value.password,
             };
-            return iUserRepository.Create(model);
+            iUserRepository.Create(model);
 
         }
 
         // PUT: api/User/5
         [HttpPut("{id}")]
-        public User Put(int id, UserDTO value)
+        public void Put(int id, UserDTO value)
         {
             User model = iUserRepository.Get(id);
             if (value.firstName != null)
@@ -72,7 +72,7 @@ namespace MoodyTunes.Controllers //GOOD
                 model.password = value.password;
             }
 
-            return iUserRepository.Update(model);
+            iUserRepository.Update(model);
 
 
         }

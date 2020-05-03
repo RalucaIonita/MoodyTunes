@@ -37,26 +37,26 @@ namespace MoodyTunes.Controllers //THIS IS GOOD
 
         // POST: api/Mood
         [HttpPost]
-        public Mood Post(MoodDTO value)
+        public void Post(MoodDTO value)
         {
             Mood model = new Mood()
             {
                 name = value.name,
             };
-            return iMoodRepository.Create(model);
+            iMoodRepository.Create(model);
 
         }
 
         // PUT: api/Mood/5
         [HttpPut("{id}")]
-        public Mood Put(int id, MoodDTO value)
+        public void Put(int id, MoodDTO value)
         {
             Mood model = iMoodRepository.Get(id);
             if (value.name != null)
             {
                 model.name = value.name;
             }
-            return iMoodRepository.Update(model);
+            iMoodRepository.Update(model);
 
 
         }

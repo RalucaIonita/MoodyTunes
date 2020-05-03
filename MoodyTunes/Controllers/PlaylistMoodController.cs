@@ -37,20 +37,20 @@ namespace MoodyTunes.Controllers
 
         // POST: api/PlaylistMood
         [HttpPost]
-        public PlaylistMood Post(PlaylistMoodDTO value)
+        public void Post(PlaylistMoodDTO value)
         {
             PlaylistMood model = new PlaylistMood()
             {
                 playlistId = value.playlistId,
                 moodId = value.moodId
             };
-            return iPlaylistMoodRepository.Create(model);
+            iPlaylistMoodRepository.Create(model);
 
         }
 
         // PUT: api/PlaylistMood/5
         [HttpPut("{id}")]
-        public PlaylistMood Put(int id, PlaylistMoodDTO value)
+        public void Put(int id, PlaylistMoodDTO value)
         {
             PlaylistMood model = iPlaylistMoodRepository.Get(id);
             if (value.playlistId != null)
@@ -62,7 +62,7 @@ namespace MoodyTunes.Controllers
                 model.moodId = value.moodId;
             }
             //stuff?
-            return iPlaylistMoodRepository.Update(model);
+            iPlaylistMoodRepository.Update(model);
         }
 
         // DELETE: api/ApiWithActions/5
