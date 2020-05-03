@@ -11,7 +11,6 @@ namespace MoodyTunes.Models
         public int moodId { get; set; }
         public int linkedMoodId { get; set; }
 
-        public virtual Mood firstMood { get; set; }
         public virtual Mood linkedMood { get; set; }
     }
 }
