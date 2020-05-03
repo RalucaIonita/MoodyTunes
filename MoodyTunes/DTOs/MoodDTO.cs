@@ -7,6 +7,6 @@ namespace MoodyTunes.DTOs
 {
     public class MoodDTO
     {
-        public string name { get; set; }
+       public string name { get; set; }
     }
 }
